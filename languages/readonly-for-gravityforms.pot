@@ -1,0 +1,39 @@
+# Copyright (C) 2025 Faisal Ahammad
+# This file is distributed under the GPLv3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Read Only Fields for Gravity Forms 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/readonly-for-gravityforms\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-10-05T03:18:49+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: readonly-for-gravityforms\n"
+
+#. Plugin Name of the plugin
+#: readonly-for-gravityforms.php
+msgid "Read Only Fields for Gravity Forms"
+msgstr ""
+
+#. Description of the plugin
+#: readonly-for-gravityforms.php
+msgid "Adds a universal 'Read Only' option to all Gravity Forms fields, with a tooltip warning and frontend enforcement for all field types."
+msgstr ""
+
+#. Author of the plugin
+#: readonly-for-gravityforms.php
+msgid "Faisal Ahammad"
+msgstr ""
+
+#. Author URI of the plugin
+#: readonly-for-gravityforms.php
+msgid "https://faisalahammad.com"
+msgstr ""
+
+#: readonly-for-gravityforms.php:49
+msgid "Read Only: When enabled, this field will be read-only on the frontend. Recommendation: Do not make this field required or use merge tags as the default value, as this can cause required field errors."
+msgstr ""
