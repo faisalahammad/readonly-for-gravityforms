@@ -1,10 +1,17 @@
 <?php
-/*
-Plugin Name: Gravity Forms Read Only Fields
-Description: Adds a universal 'Read Only' option to all Gravity Forms fields, with a tooltip warning and frontend enforcement for all field types.
-Version: 1.0.0
-Author: Faisal Ahammad
-License: GPLv3 or later
+/**
+ * Plugin Name:       Gravity Forms Read Only Fields
+ * Description:       Adds a universal 'Read Only' option to all Gravity Forms fields, with a tooltip warning and frontend enforcement for all field types.
+ * Version:           1.0.0
+ * Author:            Faisal Ahammad
+ * Author URI:        https://faisalahammad.com
+ * Text Domain:       gravityforms-readonly
+ * Domain Path:       /languages
+ * Requires Plugins:  gravityforms
+ * Requires PHP:      7.2
+ * Requires at least: 5.2
+ * License:           GPLv3 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if ( !defined( 'ABSPATH' ) ) {
