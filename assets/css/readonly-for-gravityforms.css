@@ -1,0 +1,6 @@
+/* Styling for fields marked as read-only on Gravity Forms front and back end. */
+.gform_wrapper .gf_readonly {
+ opacity: 0.6 !important;
+ pointer-events: none !important;
+ background: #f5f5f5 !important;
+}

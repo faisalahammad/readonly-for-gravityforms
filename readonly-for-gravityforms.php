@@ -8,7 +8,6 @@
  * Plugin URI:        https://github.com/faisalahammad/readonly-for-gravityforms
  * Text Domain:       readonly-for-gravityforms
  * Domain Path:       /languages
- * Requires Plugins:  gravityforms
  * Requires PHP:      7.4
  * Requires at least: 5.6
  * Tested up to:      6.8
@@ -18,6 +17,10 @@
 
 if ( !defined( 'ABSPATH' ) ) {
  exit;
+}
+
+if ( !defined( 'READONLY_FOR_GRAVITYFORMS_VERSION' ) ) {
+ define( 'READONLY_FOR_GRAVITYFORMS_VERSION', '1.0.0' );
 }
 
 // Supported field types for Read Only
@@ -32,19 +35,6 @@ function readonly_for_gravityforms_supported_field_types()
 add_action( 'gform_field_standard_settings', function ( $position, $form_id ) {
  if ( $position == 20 ) {
   ?>
-        <script>
-        jQuery(document).on('gform_load_field_settings', function(event, field, form){
-            // Only show for supported types and not for unsupported types
-            var rffg_supported_types = [ 'text', 'textarea', 'select', 'checkbox', 'radio', 'number', 'email', 'website', 'date', 'time', 'phone', 'address', 'name', 'list', 'multiselect', 'password' ];
-            var rffg_unsupported_types = [ 'hidden', 'html', 'captcha', 'page', 'section', 'form', 'fileupload' ];
-            if (rffg_supported_types.indexOf(field.type) !== -1 && rffg_unsupported_types.indexOf(field.type) === -1) {
-                jQuery('.readonly_setting').show();
-            } else {
-                jQuery('.readonly_setting').hide();
-            }
-            jQuery('#field_gf_readonly_enable').prop('checked', field.gf_readonly_enable == true);
-        });
-        </script>
         <li class="readonly_setting field_setting" style="display:none;">
             <input type="checkbox" id="field_gf_readonly_enable" onclick="SetFieldProperty('gf_readonly_enable', this.checked);">
             <label for="field_gf_readonly_enable" class="inline">Read Only
@@ -156,10 +146,60 @@ add_filter( 'gform_field_content', function ( $content, $field, $value, $lead_id
  return $content;
 }, 10, 5 );
 
-// Add CSS for .gf_readonly fields only
-add_action( 'wp_head', function () {
- echo '<style>.gform_wrapper .gf_readonly { opacity: 0.6 !important; pointer-events: none !important; background: #f5f5f5 !important; }</style>';
-} );
-add_action( 'admin_head', function () {
- echo '<style>.gform_wrapper .gf_readonly { opacity: 0.6 !important; pointer-events: none !important; background: #f5f5f5 !important; }</style>';
-} );
+/**
+ * Enqueue shared style used for read-only fields.
+ */
+function readonly_for_gravityforms_enqueue_style()
+{
+ $handle = 'readonly-for-gravityforms-style';
+ $src = plugins_url( 'assets/css/readonly-for-gravityforms.css', __FILE__ );
+
+ if ( !wp_style_is( $handle, 'registered' ) ) {
+  wp_register_style( $handle, $src, array(), READONLY_FOR_GRAVITYFORMS_VERSION );
+ }
+
+ wp_enqueue_style( $handle );
+}
+
+add_action(
+ 'wp_enqueue_scripts',
+ function () {
+  readonly_for_gravityforms_enqueue_style();
+ }
+);
+
+/**
+ * Determine whether we are currently on a Gravity Forms admin screen.
+ *
+ * @return bool
+ */
+function readonly_for_gravityforms_is_gravityforms_admin_page()
+{
+ if ( empty( $_GET[ 'page' ] ) ) {
+  return false;
+ }
+
+ $page = sanitize_key( wp_unslash( $_GET[ 'page' ] ) );
+
+ return strpos( $page, 'gf_' ) === 0;
+}
+
+add_action(
+ 'admin_enqueue_scripts',
+ function () {
+  if ( !readonly_for_gravityforms_is_gravityforms_admin_page() ) {
+   return;
+  }
+
+  readonly_for_gravityforms_enqueue_style();
+
+  $handle = 'readonly-for-gravityforms-admin';
+  $src = plugins_url( 'assets/js/readonly-for-gravityforms-admin.js', __FILE__ );
+
+  if ( !wp_script_is( $handle, 'registered' ) ) {
+   wp_register_script( $handle, $src, array( 'jquery' ), READONLY_FOR_GRAVITYFORMS_VERSION, true );
+  }
+
+  wp_enqueue_script( $handle );
+ }
+);
