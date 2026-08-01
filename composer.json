@@ -1,0 +1,26 @@
+{
+    "name": "faisalahammad/readonly-for-gravityforms",
+    "description": "Adds a universal 'Read Only' option to all Gravity Forms fields.",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "keywords": ["wordpress", "gravity-forms", "readonly"],
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf",
+        "build": [
+            "@phpcs",
+            "@zip"
+        ],
+        "zip": "@php build-zip.php"
+    }
+}

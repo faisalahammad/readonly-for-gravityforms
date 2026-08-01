@@ -1,0 +1,17 @@
+.distignore
+.git
+.gitignore
+.DS_Store
+.vscode
+.idea
+CLAUDE.md
+build-zip.php
+TESTING_INSTRUCTIONS.md
+composer.json
+composer.lock
+phpcs.xml.dist
+vendor
+node_modules
+*.log
+index.php
+includes/index.php
