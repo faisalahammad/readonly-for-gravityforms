@@ -2,16 +2,18 @@
 Contributors: faisalahammad
 Tags: gravity forms, readonly, field, forms, disabled field
 Requires at least: 5.6
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv3 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Adds readonly (uneditable) fields to Gravity Forms, allowing you to display information users cannot change.
 
 == Description ==
 
 Easily add a universal "Read Only" option to any Gravity Forms field. This plugin adds a checkbox to every supported field in the Gravity Forms editor, allowing you to make any field read-only on the frontend. Includes a tooltip warning to avoid using required or merge-tag default values with read-only fields.
+
+Fully compatible with Gravity Forms v2.x.x and v3.x.x.
 
 == Features ==
 
@@ -52,9 +54,13 @@ It is not recommended to use the "Required" option or merge tags as the default 
 
 == Changelog ==
 
-= 1.1.0 =
-* Refactored codebase into modular class-based structure for maintainability.
+= 1.1.0 - August 1, 2026 =
+* Refactored codebase into modular class-based structure (Loader, Field_Settings, Tooltips, Field_Render, Assets) for maintainability.
+* Verified full compatibility with Gravity Forms v2.x.x and v3.x.x.
 * Added Composer-based PHPCS/WPCS tooling and fixed all coding standards findings.
+* Added build tooling (build-zip.php, .distignore) for distribution.
+* Added gf_readonly CSS class to style read-only fields on the frontend.
+* Fixed License URI to point to GPLv3.
 * No user-facing behavior change.
 
 = 1.0.0 =

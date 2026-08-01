@@ -15,8 +15,10 @@ readonly-for-gravityforms/
 ├── readonly-for-gravityforms.php     # Main plugin file (headers + bootstrap only)
 ├── README.txt                        # WordPress.org readme
 ├── LICENSE
-├── composer.json                     # PHPCS/WPCS dev dependencies
+├── composer.json                     # PHPCS/WPCS dev dependencies + build/zip scripts
 ├── phpcs.xml.dist                    # WPCS ruleset config
+├── .distignore                       # Dist exclusion rules for build-zip.php
+├── build-zip.php                     # Build distribution zip from .distignore rules
 ├── includes/
 │   ├── class-rfgf-loader.php         # Hook registration (central place all add_action/add_filter are wired)
 │   ├── class-rfgf-field-settings.php # gform_field_standard_settings — admin field-settings checkbox UI
@@ -30,7 +32,7 @@ readonly-for-gravityforms/
 │       └── readonly-for-gravityforms-admin.js
 ├── languages/
 │   └── readonly-for-gravityforms.pot
-└── index.php                         # Silence-is-golden stub (present at every directory level)
+└── index.php                         # Silence-is-golden stub
 ```
 
 Note: current codebase is the class-based structure above: thin classes, one hook-area per
@@ -47,16 +49,19 @@ size/complexity warrants.
 | `gform_field_standard_settings` | Injects "Make this field read-only" checkbox in field editor | `RFGF_Field_Settings` |
 | `gform_tooltips` | Adds tooltip text for the readonly setting | `RFGF_Tooltips` |
 | `gform_field_content` | Renders the field as readonly (disabled/locked) when the setting is on | `RFGF_Field_Render` |
-| `admin_enqueue_scripts` (or equivalent) | Loads admin CSS/JS, gated to Gravity Forms admin pages only | `RFGF_Assets` |
+| `wp_enqueue_scripts` | Loads shared frontend style | `RFGF_Assets` |
+| `admin_enqueue_scripts` | Loads admin CSS/JS, gated to Gravity Forms admin pages only | `RFGF_Assets` |
 
 ### Supported Field Types
-See `readonly_for_gravityforms_supported_field_types()` (or its refactored equivalent) for
-the authoritative list — do not hardcode a duplicate list elsewhere; reference/reuse it.
+Authoritative list lives in two places (duplicated by design — frontend PHP vs admin JS):
+- PHP: `RFGF_Field_Render::$supported_field_types` (`includes/class-rfgf-field-render.php`)
+- JS: `supportedTypes` array (`assets/js/readonly-for-gravityforms-admin.js`)
+Keep both in sync when adding/removing types. Do not hardcode a third copy elsewhere.
 
 ### Admin Page Detection
-Assets must only enqueue on actual Gravity Forms admin screens. Reuse the existing
-`is_gravityforms_admin_page()`-equivalent helper rather than re-implementing screen checks
-in multiple places.
+Assets must only enqueue on actual Gravity Forms admin screens. Detection is the private
+`RFGF_Assets::is_gravityforms_admin_page()` method (`includes/class-rfgf-assets.php`) —
+do not re-implement screen checks elsewhere.
 
 ---
 
@@ -80,8 +85,8 @@ in multiple places.
 - `phpcs.xml.dist`: WordPress-Extra ruleset minimum, text-domain check for
   `readonly-for-gravityforms`, PHP compatibility check against the plugin's declared minimum
   PHP version in the plugin header/README.txt
-- Run via `composer run phpcs` (add this script to `composer.json`) or
-  `vendor/bin/phpcs`
+- Run via `composer run phpcs`, `vendor/bin/phpcs`, or `composer run build` (runs phpcs + zip).
+  `composer run zip` builds the distribution zip via `build-zip.php`.
 - No PHPUnit test suite currently exists — if/when added later, follow the same
   `wp scaffold plugin-tests` pattern used in other projects, not part of this initial setup
   unless explicitly requested
@@ -119,9 +124,9 @@ Run before reporting done:
 composer run phpcs
 coderabbit review --agent
 ```
-Resolve or explicitly justify every finding. No PHPUnit suite exists yet, so manual
-verification against `TESTING_INSTRUCTIONS.md` is the primary safety net — be thorough in
-writing it.
+Resolve or explicitly justify every finding. No PHPUnit suite exists yet — manual QA
+against plugin behavior (enable/disable read-only on each supported field type, confirm
+frontend renders, confirm value still submits) is the primary safety net.
 
 ---
 
@@ -135,4 +140,5 @@ writing it.
 ---
 
 ## Current Status
-Post-refactor baseline. See README.txt changelog for version history.
+v1.1.0 release prep. Build tooling (build-zip.php, .distignore) added. See README.txt
+changelog for version history.
