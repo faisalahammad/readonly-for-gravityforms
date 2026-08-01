@@ -12,7 +12,7 @@
  * Requires at least: 5.6
  * Tested up to:      6.8
  * License:           GPLv3 or later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
