@@ -54,15 +54,3 @@ It is not recommended to use the "Required" option or merge tags as the default 
 
 = 1.0.0 =
 * Initial release
-
-== License ==
-GPLv3 or later
-
-== Languages/Localization ==
-* Text domain: readonly-for-gravityforms
-* Domain path: /languages
-
-== Requirements ==
-* WordPress 5.6 or higher
-* PHP 7.4 or higher
-* Gravity Forms plugin
