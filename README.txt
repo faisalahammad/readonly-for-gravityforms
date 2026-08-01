@@ -3,7 +3,7 @@ Contributors: faisalahammad
 Tags: gravity forms, readonly, field, forms, disabled field
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -51,6 +51,11 @@ It is not recommended to use the "Required" option or merge tags as the default 
 4. The 'Paragraph' field, when set to read-only, is also disabled on the front end, preventing any user input.
 
 == Changelog ==
+
+= 1.1.0 =
+* Refactored codebase into modular class-based structure for maintainability.
+* Added Composer-based PHPCS/WPCS tooling and fixed all coding standards findings.
+* No user-facing behavior change.
 
 = 1.0.0 =
 * Initial release
