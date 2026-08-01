@@ -1,7 +1,6 @@
 .DS_Store
 vendor/
 composer.lock
-phpcs.xml.dist
 node_modules/
 .idea/
 .vscode/

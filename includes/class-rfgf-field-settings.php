@@ -17,7 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class RFGF_Field_Settings {
 
 	/**
-	 * Constructor — hooks into Gravity Forms.
+	 * Constructor. Hooks into Gravity Forms.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
 		add_action( 'gform_field_standard_settings', array( $this, 'render_setting' ), 10, 2 );
@@ -38,7 +40,7 @@ class RFGF_Field_Settings {
 		?>
 		<li class="readonly_setting field_setting" style="display:none;">
 			<input type="checkbox" id="field_gf_readonly_enable" onclick="SetFieldProperty('gf_readonly_enable', this.checked);">
-			<label for="field_gf_readonly_enable" class="inline">Read Only
+			<label for="field_gf_readonly_enable" class="inline"><?php esc_html_e( 'Read Only', 'readonly-for-gravityforms' ); ?>
 				<button onclick="return false;" onkeypress="return false;" class="gf_tooltip tooltip tooltip_form_field_readonly" aria-label="<?php esc_attr_e( 'Read Only: When enabled, this field will be read-only on the frontend. Recommendation: Do not make this field required or use merge tags as the default value, as this can cause required field errors.', 'readonly-for-gravityforms' ); ?>">
 					<i class="gform-icon gform-icon--question-mark" aria-hidden="true"></i>
 				</button>

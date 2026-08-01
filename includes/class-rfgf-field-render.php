@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend field rendering — readonly enforcement.
+ * Frontend field rendering. Readonly enforcement.
  *
  * @package Read_Only_For_GravityForms
  * @since   1.1.0
@@ -42,7 +42,9 @@ class RFGF_Field_Render {
 	);
 
 	/**
-	 * Constructor — hooks into Gravity Forms.
+	 * Constructor. Hooks into Gravity Forms.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
 		add_filter( 'gform_field_content', array( $this, 'enforce_readonly' ), 10, 5 );
@@ -73,7 +75,7 @@ class RFGF_Field_Render {
 			return $content;
 		}
 
-		// Add readonly/disabled and class to the first input/select/textarea in the field content.
+		// Add readonly/disabled and class to the input/select/textarea in the field content.
 		$content = $this->process_input_types( $content );
 		$content = $this->process_textarea( $content );
 		$content = $this->process_select( $content );
@@ -154,11 +156,11 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'input' );
 
-		if ( strpos( $input, 'readonly' ) === false ) {
+		if ( false === strpos( $input, 'readonly' ) ) {
 			$input = str_replace( '<input', '<input readonly', $input );
 		}
 
-		if ( strpos( $input, 'disabled' ) === false ) {
+		if ( false === strpos( $input, 'disabled' ) ) {
 			$input = str_replace( '<input', '<input disabled', $input );
 		}
 
@@ -177,11 +179,11 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'textarea' );
 
-		if ( strpos( $input, 'readonly' ) === false ) {
+		if ( false === strpos( $input, 'readonly' ) ) {
 			$input = str_replace( '<textarea', '<textarea readonly', $input );
 		}
 
-		if ( strpos( $input, 'disabled' ) === false ) {
+		if ( false === strpos( $input, 'disabled' ) ) {
 			$input = str_replace( '<textarea', '<textarea disabled', $input );
 		}
 
@@ -200,7 +202,7 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'select' );
 
-		if ( strpos( $input, 'disabled' ) === false ) {
+		if ( false === strpos( $input, 'disabled' ) ) {
 			$input = str_replace( '<select', '<select disabled', $input );
 		}
 
@@ -219,7 +221,7 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'input' );
 
-		if ( strpos( $input, 'disabled' ) === false ) {
+		if ( false === strpos( $input, 'disabled' ) ) {
 			$input = str_replace( '<input', '<input disabled', $input );
 		}
 

@@ -33,10 +33,9 @@ readonly-for-gravityforms/
 └── index.php                         # Silence-is-golden stub (present at every directory level)
 ```
 
-Note: current codebase is procedural (functions + inline hook closures), not OOP. The class
-split above is the target structure post-refactor — thin classes, one hook-area per class,
-no deep abstraction. Do not over-engineer beyond what this plugin's actual size/complexity
-(~200 lines pre-refactor) warrants.
+Note: current codebase is the class-based structure above: thin classes, one hook-area per
+class, no deep abstraction. Do not over-engineer beyond what this plugin's actual
+size/complexity warrants.
 
 ---
 

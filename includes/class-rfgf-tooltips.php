@@ -17,7 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class RFGF_Tooltips {
 
 	/**
-	 * Constructor — hooks into Gravity Forms.
+	 * Constructor. Hooks into Gravity Forms.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
 		add_filter( 'gform_tooltips', array( $this, 'register_tooltip' ) );

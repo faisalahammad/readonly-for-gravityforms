@@ -17,7 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class RFGF_Loader {
 
 	/**
-	 * Constructor — registers all hooks.
+	 * Constructor. Registers all hooks.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
 		$this->load_classes();

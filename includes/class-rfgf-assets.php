@@ -25,6 +25,8 @@ class RFGF_Assets {
 
 	/**
 	 * Constructor.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
 		$this->version = defined( 'READONLY_FOR_GRAVITYFORMS_VERSION' ) ? READONLY_FOR_GRAVITYFORMS_VERSION : '1.1.0';
