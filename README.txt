@@ -1,5 +1,5 @@
 === Read Only Fields for Gravity Forms ===
-Contributors: faisalahammad
+Contributors: faisalahammad, itsmhrahman
 Tags: gravity forms, readonly, field, forms, disabled field
 Requires at least: 6.8
 Tested up to: 7.0
