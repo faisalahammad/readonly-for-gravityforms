@@ -1,8 +1,8 @@
 === Read Only Fields for Gravity Forms ===
 Contributors: faisalahammad
 Tags: gravity forms, readonly, field, forms, disabled field
-Requires at least: 5.6
-Tested up to: 6.9
+Requires at least: 6.8
+Tested up to: 7.0
 Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv3 or later
@@ -57,10 +57,7 @@ It is not recommended to use the "Required" option or merge tags as the default 
 = 1.1.0 - August 1, 2026 =
 * Refactored codebase into modular class-based structure (Loader, Field_Settings, Tooltips, Field_Render, Assets) for maintainability.
 * Verified full compatibility with Gravity Forms v2.x.x and v3.x.x.
-* Added Composer-based PHPCS/WPCS tooling and fixed all coding standards findings.
-* Added build tooling (build-zip.php, .distignore) for distribution.
 * Added gf_readonly CSS class to style read-only fields on the frontend.
-* Fixed License URI to point to GPLv3.
 * No user-facing behavior change.
 
 = 1.0.0 =
