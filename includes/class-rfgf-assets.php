@@ -33,12 +33,19 @@ class RFGF_Assets {
 	}
 
 	/**
-	 * Enqueue the shared frontend style.
+	 * Enqueue the shared frontend style when a rendered form has a read-only field.
+	 *
+	 * @param array $form The form being rendered.
 	 *
 	 * @return void
 	 */
-	public function enqueue_frontend_style() {
-		$this->enqueue_style();
+	public function enqueue_frontend_style( $form ) {
+		foreach ( (array) rgar( $form, 'fields' ) as $field ) {
+			if ( rgar( $field, 'gf_readonly_enable' ) ) {
+				$this->enqueue_style();
+				return;
+			}
+		}
 	}
 
 	/**

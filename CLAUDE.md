@@ -50,8 +50,8 @@ size/complexity warrants.
 |---|---|---|
 | `gform_field_standard_settings` | Injects "Make this field read-only" checkbox in field editor | `RFGF_Field_Settings` |
 | `gform_tooltips` | Adds tooltip text for the readonly setting | `RFGF_Tooltips` |
-| `gform_field_content` | Renders the field as readonly (disabled/locked) when the setting is on | `RFGF_Field_Render` |
-| `wp_enqueue_scripts` | Loads shared frontend style | `RFGF_Assets` |
+| `gform_field_content` | Renders the field as readonly (disabled/locked) when the setting is on, plus a hidden input copy of the value so it still submits | `RFGF_Field_Render` |
+| `gform_enqueue_scripts` | Loads shared frontend style, only for forms with a read-only field | `RFGF_Assets` |
 | `admin_enqueue_scripts` | Loads admin CSS/JS, gated to Gravity Forms admin pages only | `RFGF_Assets` |
 
 ### Supported Field Types
@@ -102,8 +102,8 @@ do not re-implement screen checks elsewhere.
 1. **Pure behavior preservation during refactor.** Every hook, filter priority, and rendering
    behavior must survive the file split exactly. No bug fixes, no feature changes bundled into
    a structural refactor unless separately approved.
-2. **Unit tests cover rendering only.** `tests/` covers `RFGF_Field_Render` and
-   `RFGF_Tooltips`. Admin UI, asset gating and real GF output still need manual QA.
+2. **Unit tests cover rendering and style gating only.** `tests/` covers `RFGF_Field_Render`,
+   `RFGF_Tooltips` and frontend style gating in `RFGF_Assets`. Admin UI, admin asset gating and real GF output still need manual QA.
 3. Assets must remain gated to Gravity Forms admin screens only — don't let CSS/JS leak onto
    unrelated wp-admin pages.
 4. `.pot` file must be regenerated any time translatable strings move between files or change,
