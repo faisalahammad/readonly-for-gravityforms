@@ -2,8 +2,8 @@
 Contributors: faisalahammad, itsmhrahman
 Tags: gravity forms, readonly, field, forms, disabled field
 Requires at least: 6.8
-Tested up to: 7.0
-Stable tag: 1.1.0
+Tested up to: 7.1
+Stable tag: 1.1.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -53,6 +53,12 @@ It is not recommended to use the "Required" option or merge tags as the default 
 4. The 'Paragraph' field, when set to read-only, is also disabled on the front end, preventing any user input.
 
 == Changelog ==
+
+= 1.1.1 - October 11, 2026 =
+* Fixed: the readonly attribute was never added to text inputs and textareas, because the gf_readonly class (or any attribute value containing "readonly" or "disabled") was mistaken for the attribute itself.
+* Improved: the Read Only tooltip text in the form editor is now translatable.
+* Tested up to WordPress 7.1.
+* Dev: updated coding standards tooling (PHPCompatibilityWP 2.1) and added a PHPUnit test suite.
 
 = 1.1.0 - August 1, 2026 =
 * Refactored codebase into modular class-based structure (Loader, Field_Settings, Tooltips, Field_Render, Assets) for maintainability.
