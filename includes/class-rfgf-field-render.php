@@ -102,7 +102,7 @@ class RFGF_Field_Render {
 	 */
 	private function process_textarea( $content ) {
 		return preg_replace_callback(
-			'/(<textarea[^>]*>)/i',
+			'/(<textarea\b[^>]*>)(.*?)(<\/textarea>)/is',
 			array( $this, 'modify_textarea_markup' ),
 			$content
 		);
@@ -117,7 +117,7 @@ class RFGF_Field_Render {
 	 */
 	private function process_select( $content ) {
 		return preg_replace_callback(
-			'/(<select[^>]*>)/i',
+			'/(<select\b[^>]*>)(.*?)(<\/select>)/is',
 			array( $this, 'modify_select_markup' ),
 			$content
 		);
@@ -143,7 +143,7 @@ class RFGF_Field_Render {
 	 *
 	 * @param array $matches Regex match.
 	 *
-	 * @return string Modified input markup.
+	 * @return string Modified input markup, followed by a hidden copy of its value when disabled here.
 	 */
 	private function modify_input_markup( $matches ) {
 		$input = $matches[1];
@@ -154,19 +154,21 @@ class RFGF_Field_Render {
 			$input = str_replace( '<input', '<input readonly', $input );
 		}
 
-		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
-			$input = str_replace( '<input', '<input disabled', $input );
+		if ( $this->has_attribute( $input, 'disabled' ) ) {
+			return $input;
 		}
 
-		return $input;
+		$input = str_replace( '<input', '<input disabled', $input );
+
+		return $input . $this->hidden_input( $input, (string) $this->attribute_value( $input, 'value' ) );
 	}
 
 	/**
 	 * Modify a textarea element to add class, readonly, and disabled attributes.
 	 *
-	 * @param array $matches Regex match.
+	 * @param array $matches Regex match: opening tag, content, closing tag.
 	 *
-	 * @return string Modified textarea markup.
+	 * @return string Modified textarea markup, followed by a hidden copy of its value when disabled here.
 	 */
 	private function modify_textarea_markup( $matches ) {
 		$input = $matches[1];
@@ -177,30 +179,62 @@ class RFGF_Field_Render {
 			$input = str_replace( '<textarea', '<textarea readonly', $input );
 		}
 
-		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
-			$input = str_replace( '<textarea', '<textarea disabled', $input );
+		if ( $this->has_attribute( $input, 'disabled' ) ) {
+			return $input . $matches[2] . $matches[3];
 		}
 
-		return $input;
+		$input = str_replace( '<textarea', '<textarea disabled', $input );
+
+		return $input . $matches[2] . $matches[3] . $this->hidden_input( $input, $matches[2] );
 	}
 
 	/**
 	 * Modify a select element to add class and disabled attribute.
 	 *
-	 * @param array $matches Regex match.
+	 * @param array $matches Regex match: opening tag, options, closing tag.
 	 *
-	 * @return string Modified select markup.
+	 * @return string Modified select markup, followed by hidden copies of its selected values when disabled here.
 	 */
 	private function modify_select_markup( $matches ) {
 		$input = $matches[1];
 
 		$input = $this->add_class( $input, 'select' );
 
-		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
-			$input = str_replace( '<select', '<select disabled', $input );
+		if ( $this->has_attribute( $input, 'disabled' ) ) {
+			return $input . $matches[2] . $matches[3];
 		}
 
-		return $input;
+		$input = str_replace( '<select', '<select disabled', $input );
+
+		preg_match_all( '/<option\b([^>]*)>(.*?)<\/option>/is', $matches[2], $options, PREG_SET_ORDER );
+
+		$enabled  = array();
+		$selected = array();
+		foreach ( $options as $option ) {
+			if ( $this->has_attribute( '<option' . $option[1] . '>', 'disabled' ) ) {
+				continue;
+			}
+
+			$enabled[] = $option;
+
+			if ( $this->has_attribute( '<option' . $option[1] . '>', 'selected' ) ) {
+				$selected[] = $option;
+			}
+		}
+
+		// Browsers submit the first enabled option of a single select when none is marked selected.
+		if ( ! $selected && $enabled && ! $this->has_attribute( $input, 'multiple' ) ) {
+			$selected[] = $enabled[0];
+		}
+
+		$hidden = '';
+		foreach ( $selected as $option ) {
+			$value = $this->attribute_value( '<option' . $option[1] . '>', 'value' );
+
+			$hidden .= $this->hidden_input( $input, null === $value ? trim( $option[2] ) : $value );
+		}
+
+		return $input . $matches[2] . $matches[3] . $hidden;
 	}
 
 	/**
@@ -208,18 +242,59 @@ class RFGF_Field_Render {
 	 *
 	 * @param array $matches Regex match.
 	 *
-	 * @return string Modified input markup.
+	 * @return string Modified input markup, followed by a hidden copy of its value when checked and disabled here.
 	 */
 	private function modify_checkbox_radio_markup( $matches ) {
 		$input = $matches[1];
 
 		$input = $this->add_class( $input, 'input' );
 
-		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
-			$input = str_replace( '<input', '<input disabled', $input );
+		if ( $this->has_attribute( $input, 'disabled' ) ) {
+			return $input;
 		}
 
-		return $input;
+		$input = str_replace( '<input', '<input disabled', $input );
+
+		if ( ! $this->has_attribute( $input, 'checked' ) ) {
+			return $input;
+		}
+
+		return $input . $this->hidden_input( $input, (string) $this->attribute_value( $input, 'value' ) );
+	}
+
+	/**
+	 * Build a hidden input carrying a locked element's value. Browsers never submit disabled
+	 * controls, so without this copy the read-only value would be lost from the entry.
+	 *
+	 * @param string $tag   The locked element's opening tag HTML.
+	 * @param string $value The value to submit, as found in the markup.
+	 *
+	 * @return string Hidden input HTML, or empty string when the element has no name.
+	 */
+	private function hidden_input( $tag, $value ) {
+		$name = $this->attribute_value( $tag, 'name' );
+
+		if ( null === $name ) {
+			return '';
+		}
+
+		return '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '">';
+	}
+
+	/**
+	 * Read a quoted attribute value from an element tag.
+	 *
+	 * @param string $tag       The element opening tag HTML.
+	 * @param string $attribute The attribute name.
+	 *
+	 * @return string|null The raw (still HTML-escaped) value, or null when the attribute is missing.
+	 */
+	private function attribute_value( $tag, $attribute ) {
+		if ( ! preg_match( '/\s' . preg_quote( $attribute, '/' ) . '=(?:"([^"]*)"|\'([^\']*)\')/i', $tag, $match ) ) {
+			return null;
+		}
+
+		return isset( $match[2] ) ? $match[2] : $match[1];
 	}
 
 	/**

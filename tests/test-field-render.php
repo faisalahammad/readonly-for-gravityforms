@@ -64,13 +64,13 @@ class Test_RFGF_Field_Render extends TestCase {
 	}
 
 	/**
-	 * Text input gets readonly, disabled and the class appended to existing classes.
+	 * Text input gets readonly, disabled, the class, and a hidden copy of its value.
 	 *
 	 * @return void
 	 */
 	public function test_text_input_is_locked() {
 		$out = $this->render( '<input name="input_1" type="text" class="large" value="a">', new RFGF_Test_Field( 'text' ) );
-		$this->assertSame( '<input disabled readonly name="input_1" type="text" class="large gf_readonly" value="a">', $out );
+		$this->assertSame( '<input disabled readonly name="input_1" type="text" class="large gf_readonly" value="a"><input type="hidden" name="input_1" value="a">', $out );
 	}
 
 	/**
@@ -84,23 +84,23 @@ class Test_RFGF_Field_Render extends TestCase {
 	}
 
 	/**
-	 * Textarea gets readonly and disabled.
+	 * Textarea gets readonly, disabled, and a hidden copy of its content.
 	 *
 	 * @return void
 	 */
 	public function test_textarea_is_locked() {
 		$out = $this->render( '<textarea name="input_2" class="textarea medium">hi</textarea>', new RFGF_Test_Field( 'textarea' ) );
-		$this->assertSame( '<textarea disabled readonly name="input_2" class="textarea medium gf_readonly">hi</textarea>', $out );
+		$this->assertSame( '<textarea disabled readonly name="input_2" class="textarea medium gf_readonly">hi</textarea><input type="hidden" name="input_2" value="hi">', $out );
 	}
 
 	/**
-	 * Select gets disabled only.
+	 * Select gets disabled; with nothing selected the first option is submitted, like a browser does.
 	 *
 	 * @return void
 	 */
 	public function test_select_is_disabled() {
 		$out = $this->render( '<select name="input_3" class="medium"><option>x</option></select>', new RFGF_Test_Field( 'select' ) );
-		$this->assertSame( '<select disabled name="input_3" class="medium gf_readonly"><option>x</option></select>', $out );
+		$this->assertSame( '<select disabled name="input_3" class="medium gf_readonly"><option>x</option></select><input type="hidden" name="input_3" value="x">', $out );
 	}
 
 	/**
@@ -137,5 +137,62 @@ class Test_RFGF_Field_Render extends TestCase {
 
 		$out = $this->render( '<select class="not-disabled"><option>x</option></select>', new RFGF_Test_Field( 'select' ) );
 		$this->assertStringContainsString( '<select disabled ', $out );
+	}
+
+	/**
+	 * Only checked checkboxes and radios are copied to hidden inputs, keeping GF's names.
+	 *
+	 * @return void
+	 */
+	public function test_checked_choices_are_submitted() {
+		$html = "<input name='input_4.1' type='checkbox' value='One' checked='checked'><input name='input_4.2' type='checkbox' value='Two'>";
+		$out  = $this->render( $html, new RFGF_Test_Field( 'checkbox' ) );
+
+		$this->assertStringContainsString( '<input type="hidden" name="input_4.1" value="One">', $out );
+		$this->assertStringNotContainsString( 'name="input_4.2"', $out );
+	}
+
+	/**
+	 * Selected options are copied, one hidden input each for a multiselect.
+	 *
+	 * @return void
+	 */
+	public function test_selected_options_are_submitted() {
+		$html = "<select name='input_5[]' multiple='multiple'><option value='a' selected='selected'>A</option><option value='b'>B</option><option value='c' selected='selected'>C</option></select>";
+		$out  = $this->render( $html, new RFGF_Test_Field( 'multiselect' ) );
+
+		$this->assertStringEndsWith( '</select><input type="hidden" name="input_5[]" value="a"><input type="hidden" name="input_5[]" value="c">', $out );
+
+		$html = "<select name='input_6' multiple='multiple'><option value='a'>A</option></select>";
+		$this->assertStringEndsWith( '</select>', $this->render( $html, new RFGF_Test_Field( 'multiselect' ) ) );
+
+		$html = "<select name='input_10'><option value='x' disabled='disabled'>X</option><option value='y'>Y</option></select>";
+		$this->assertStringEndsWith( '</select><input type="hidden" name="input_10" value="y">', $this->render( $html, new RFGF_Test_Field( 'select' ) ) );
+	}
+
+	/**
+	 * Escaped values stay escaped once and quotes cannot break out of the hidden input.
+	 *
+	 * @return void
+	 */
+	public function test_hidden_values_are_escaped() {
+		$out = $this->render( "<input name='input_7' type='text' value='Tom &amp; \"Jerry\"'>", new RFGF_Test_Field( 'text' ) );
+		$this->assertStringEndsWith( '<input type="hidden" name="input_7" value="Tom &amp; &quot;Jerry&quot;">', $out );
+
+		$out = $this->render( '<textarea name="input_8">a &lt;b&gt; "c"</textarea>', new RFGF_Test_Field( 'textarea' ) );
+		$this->assertStringEndsWith( '<input type="hidden" name="input_8" value="a &lt;b&gt; &quot;c&quot;">', $out );
+	}
+
+	/**
+	 * Elements that were already disabled, or have no name, get no hidden copy.
+	 *
+	 * @return void
+	 */
+	public function test_no_hidden_copy_without_name_or_when_already_disabled() {
+		$out = $this->render( '<input name="input_9" type="text" disabled value="a">', new RFGF_Test_Field( 'text' ) );
+		$this->assertStringNotContainsString( 'type="hidden"', $out );
+
+		$out = $this->render( '<input type="text" value="a">', new RFGF_Test_Field( 'text' ) );
+		$this->assertStringNotContainsString( 'type="hidden"', $out );
 	}
 }
