@@ -29,16 +29,23 @@ class RFGF_Assets {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->version = defined( 'READONLY_FOR_GRAVITYFORMS_VERSION' ) ? READONLY_FOR_GRAVITYFORMS_VERSION : '1.1.0';
+		$this->version = READONLY_FOR_GRAVITYFORMS_VERSION;
 	}
 
 	/**
-	 * Enqueue the shared frontend style.
+	 * Enqueue the shared frontend style when a rendered form has a read-only field.
+	 *
+	 * @param array $form The form being rendered.
 	 *
 	 * @return void
 	 */
-	public function enqueue_frontend_style() {
-		$this->enqueue_style();
+	public function enqueue_frontend_style( $form ) {
+		foreach ( (array) rgar( $form, 'fields' ) as $field ) {
+			if ( rgar( $field, 'gf_readonly_enable' ) ) {
+				$this->enqueue_style();
+				return;
+			}
+		}
 	}
 
 	/**
@@ -70,7 +77,7 @@ class RFGF_Assets {
 		$page = sanitize_key( wp_unslash( $_GET['page'] ) );
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		return strpos( $page, 'gf_' ) === 0;
+		return 0 === strpos( $page, 'gf_' );
 	}
 
 	/**

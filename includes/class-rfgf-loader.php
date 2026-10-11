@@ -49,7 +49,7 @@ class RFGF_Loader {
 		new RFGF_Field_Render();
 
 		$assets = new RFGF_Assets();
-		add_action( 'wp_enqueue_scripts', array( $assets, 'enqueue_frontend_style' ) );
+		add_action( 'gform_enqueue_scripts', array( $assets, 'enqueue_frontend_style' ) );
 		add_action( 'admin_enqueue_scripts', array( $assets, 'enqueue_admin_assets' ) );
 	}
 }

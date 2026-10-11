@@ -10,8 +10,13 @@ TESTING_INSTRUCTIONS.md
 composer.json
 composer.lock
 phpcs.xml.dist
+phpunit.xml.dist
+.phpunit.result.cache
+tests
+*.zip
 vendor
 node_modules
 *.log
 index.php
 includes/index.php
+.github

@@ -33,7 +33,13 @@ class RFGF_Tooltips {
 	 * @return array Modified tooltips.
 	 */
 	public function register_tooltip( $tooltips ) {
-		$tooltips['form_field_readonly'] = '<strong>Read Only</strong> When enabled, this field will be read-only on the frontend. <br><b>Recommendation:</b> Do not make this field required or use merge tags as the default value, as this can cause required field errors.';
+		$tooltips['form_field_readonly'] = sprintf(
+			'<strong>%1$s</strong> %2$s <br><b>%3$s</b> %4$s',
+			__( 'Read Only', 'readonly-for-gravityforms' ),
+			__( 'When enabled, this field will be read-only on the frontend.', 'readonly-for-gravityforms' ),
+			__( 'Recommendation:', 'readonly-for-gravityforms' ),
+			__( 'Do not make this field required or use merge tags as the default value, as this can cause required field errors.', 'readonly-for-gravityforms' )
+		);
 
 		return $tooltips;
 	}

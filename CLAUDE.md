@@ -15,8 +15,10 @@ readonly-for-gravityforms/
 ├── readonly-for-gravityforms.php     # Main plugin file (headers + bootstrap only)
 ├── README.txt                        # WordPress.org readme
 ├── LICENSE
-├── composer.json                     # PHPCS/WPCS dev dependencies + build/zip scripts
+├── composer.json                     # PHPCS/WPCS/PHPUnit dev dependencies + build/zip/test scripts
 ├── phpcs.xml.dist                    # WPCS ruleset config
+├── phpunit.xml.dist                  # PHPUnit config
+├── tests/                            # DB-free PHPUnit unit tests (bootstrap stubs WP/GF functions)
 ├── .distignore                       # Dist exclusion rules for build-zip.php
 ├── build-zip.php                     # Build distribution zip from .distignore rules
 ├── includes/
@@ -48,8 +50,8 @@ size/complexity warrants.
 |---|---|---|
 | `gform_field_standard_settings` | Injects "Make this field read-only" checkbox in field editor | `RFGF_Field_Settings` |
 | `gform_tooltips` | Adds tooltip text for the readonly setting | `RFGF_Tooltips` |
-| `gform_field_content` | Renders the field as readonly (disabled/locked) when the setting is on | `RFGF_Field_Render` |
-| `wp_enqueue_scripts` | Loads shared frontend style | `RFGF_Assets` |
+| `gform_field_content` | Renders the field as readonly (disabled/locked) when the setting is on, plus a hidden input copy of the value so it still submits | `RFGF_Field_Render` |
+| `gform_enqueue_scripts` | Loads shared frontend style, only for forms with a read-only field | `RFGF_Assets` |
 | `admin_enqueue_scripts` | Loads admin CSS/JS, gated to Gravity Forms admin pages only | `RFGF_Assets` |
 
 ### Supported Field Types
@@ -87,9 +89,11 @@ do not re-implement screen checks elsewhere.
   PHP version in the plugin header/README.txt
 - Run via `composer run phpcs`, `vendor/bin/phpcs`, or `composer run build` (runs phpcs + zip).
   `composer run zip` builds the distribution zip via `build-zip.php`.
-- No PHPUnit test suite currently exists — if/when added later, follow the same
-  `wp scaffold plugin-tests` pattern used in other projects, not part of this initial setup
-  unless explicitly requested
+- PHPUnit unit tests live in `tests/` and run via `composer run test` (no database needed).
+  `tests/bootstrap.php` stubs the few WP/GF functions the classes call (`add_filter`,
+  `add_action`, `__`, `rgar`). PHPUnit stays on 9.6 for WP test-lib compatibility. The
+  `wp scaffold plugin-tests` integration pattern was not used because the local MySQL
+  credentials in wp-config.php do not work.
 
 ---
 
@@ -98,9 +102,8 @@ do not re-implement screen checks elsewhere.
 1. **Pure behavior preservation during refactor.** Every hook, filter priority, and rendering
    behavior must survive the file split exactly. No bug fixes, no feature changes bundled into
    a structural refactor unless separately approved.
-2. **No test suite yet.** Verification after any change relies on manual QA + careful code
-   review (diff old vs new logic), not automated tests. Be extra careful with sub-agent
-   verification steps here since there's no safety net.
+2. **Unit tests cover rendering and style gating only.** `tests/` covers `RFGF_Field_Render`,
+   `RFGF_Tooltips` and frontend style gating in `RFGF_Assets`. Admin UI, admin asset gating and real GF output still need manual QA.
 3. Assets must remain gated to Gravity Forms admin screens only — don't let CSS/JS leak onto
    unrelated wp-admin pages.
 4. `.pot` file must be regenerated any time translatable strings move between files or change,
@@ -122,9 +125,10 @@ do not re-implement screen checks elsewhere.
 Run before reporting done:
 ```
 composer run phpcs
+composer run test
 coderabbit review --agent
 ```
-Resolve or explicitly justify every finding. No PHPUnit suite exists yet — manual QA
+Resolve or explicitly justify every finding. Manual QA
 against plugin behavior (enable/disable read-only on each supported field type, confirm
 frontend renders, confirm value still submits) is the primary safety net.
 
@@ -140,5 +144,5 @@ frontend renders, confirm value still submits) is the primary safety net.
 ---
 
 ## Current Status
-v1.1.0 release prep. Build tooling (build-zip.php, .distignore) added. See README.txt
+v1.1.1 release prep. PHPUnit unit tests added. See README.txt
 changelog for version history.
