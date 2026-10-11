@@ -29,7 +29,7 @@ class RFGF_Assets {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->version = defined( 'READONLY_FOR_GRAVITYFORMS_VERSION' ) ? READONLY_FOR_GRAVITYFORMS_VERSION : '1.1.0';
+		$this->version = READONLY_FOR_GRAVITYFORMS_VERSION;
 	}
 
 	/**
@@ -70,7 +70,7 @@ class RFGF_Assets {
 		$page = sanitize_key( wp_unslash( $_GET['page'] ) );
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		return strpos( $page, 'gf_' ) === 0;
+		return 0 === strpos( $page, 'gf_' );
 	}
 
 	/**
