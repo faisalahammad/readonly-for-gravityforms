@@ -5,9 +5,11 @@
     "license": "GPL-3.0-or-later",
     "keywords": ["wordpress", "gravity-forms", "readonly"],
     "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-        "wp-coding-standards/wpcs": "^3.0",
-        "phpcompatibility/phpcompatibility-wp": "^1.0"
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.2",
+        "wp-coding-standards/wpcs": "^3.4",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^4.0"
     },
     "config": {
         "allow-plugins": {
@@ -17,8 +19,10 @@
     "scripts": {
         "phpcs": "phpcs",
         "phpcbf": "phpcbf",
+        "test": "phpunit",
         "build": [
             "@phpcs",
+            "@test",
             "@zip"
         ],
         "zip": "@php build-zip.php"

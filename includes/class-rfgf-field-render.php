@@ -38,7 +38,6 @@ class RFGF_Field_Render {
 		'list',
 		'multiselect',
 		'password',
-		'hidden',
 	);
 
 	/**
@@ -67,11 +66,6 @@ class RFGF_Field_Render {
 		}
 
 		if ( ! in_array( $field->type, $this->supported_field_types, true ) ) {
-			return $content;
-		}
-
-		// Don't apply to HTML, Section, Hidden.
-		if ( in_array( $field->type, array( 'html', 'section', 'hidden' ), true ) ) {
 			return $content;
 		}
 
@@ -156,11 +150,11 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'input' );
 
-		if ( false === strpos( $input, 'readonly' ) ) {
+		if ( ! $this->has_attribute( $input, 'readonly' ) ) {
 			$input = str_replace( '<input', '<input readonly', $input );
 		}
 
-		if ( false === strpos( $input, 'disabled' ) ) {
+		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
 			$input = str_replace( '<input', '<input disabled', $input );
 		}
 
@@ -179,11 +173,11 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'textarea' );
 
-		if ( false === strpos( $input, 'readonly' ) ) {
+		if ( ! $this->has_attribute( $input, 'readonly' ) ) {
 			$input = str_replace( '<textarea', '<textarea readonly', $input );
 		}
 
-		if ( false === strpos( $input, 'disabled' ) ) {
+		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
 			$input = str_replace( '<textarea', '<textarea disabled', $input );
 		}
 
@@ -202,7 +196,7 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'select' );
 
-		if ( false === strpos( $input, 'disabled' ) ) {
+		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
 			$input = str_replace( '<select', '<select disabled', $input );
 		}
 
@@ -221,11 +215,26 @@ class RFGF_Field_Render {
 
 		$input = $this->add_class( $input, 'input' );
 
-		if ( false === strpos( $input, 'disabled' ) ) {
+		if ( ! $this->has_attribute( $input, 'disabled' ) ) {
 			$input = str_replace( '<input', '<input disabled', $input );
 		}
 
 		return $input;
+	}
+
+	/**
+	 * Whether an element tag has the given boolean attribute. Quoted attribute values are
+	 * ignored so a class such as gf_readonly or a placeholder mentioning "disabled" does not count.
+	 *
+	 * @param string $tag       The element opening tag HTML.
+	 * @param string $attribute The attribute name.
+	 *
+	 * @return bool
+	 */
+	private function has_attribute( $tag, $attribute ) {
+		$tag = preg_replace( '/"[^"]*"|\'[^\']*\'/', '', $tag );
+
+		return 1 === preg_match( '/\s' . preg_quote( $attribute, '/' ) . '(?=[\s=\/>])/i', $tag );
 	}
 
 	/**
