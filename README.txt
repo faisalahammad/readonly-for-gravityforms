@@ -1,5 +1,6 @@
 === Read Only Fields for Gravity Forms ===
 Contributors: faisalahammad, itsmhrahman
+Donate link: https://buymeacoffee.com/faisalahammad
 Tags: gravity forms, readonly, field, forms, disabled field
 Requires at least: 6.8
 Tested up to: 7.1
@@ -42,8 +43,11 @@ Fully compatible with Gravity Forms v2.x.x and v3.x.x.
 = Why can't I make some fields read-only? =
 The plugin intentionally excludes certain field types (hidden, html, captcha, page, section, form, fileupload) from the Read Only option, as these are not user-editable or not suitable for read-only status.
 
+= Is the value of a read-only field saved with the entry? =
+Yes. Since 1.1.1 the value shown in a read-only field (its default value, a dynamically populated value, or the checked/selected choices) is submitted and saved with the entry.
+
 = Can I use this with required fields? =
-It is not recommended to use the "Required" option or merge tags as the default value for read-only fields. This may cause required field errors if the value is empty.
+Only if the field always has a value. Visitors cannot fill in a read-only field, so a required read-only field that ends up empty will fail validation.
 
 == Screenshots ==
 
@@ -56,6 +60,8 @@ It is not recommended to use the "Required" option or merge tags as the default 
 
 = 1.1.1 - October 11, 2026 =
 * Fixed: the readonly attribute was never added to text inputs and textareas, because the gf_readonly class (or any attribute value containing "readonly" or "disabled") was mistaken for the attribute itself.
+* Fixed: read-only field values are now saved with the entry. Disabled fields are never submitted by the browser, so each locked field now carries its value in a hidden input.
+* Improved: the frontend stylesheet now loads only on pages showing a form with a read-only field, instead of on every page.
 * Improved: the Read Only tooltip text in the form editor is now translatable.
 * Tested up to WordPress 7.1.
 * Dev: updated coding standards tooling (PHPCompatibilityWP 2.1) and added a PHPUnit test suite.
